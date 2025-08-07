@@ -1,0 +1,36 @@
+coordinate_research:
+  name: Coordinate Research
+  agent: research_coordinator
+  description: >
+    Initiate and oversee the research process for {topic} through collaborative discussions.
+    1. Start by discussing the research scope with the team
+    2. Gather input from researchers on potential areas to explore
+    3. Engage in multiple rounds of discussion to refine the research direction
+    4. Ensure alignment through iterative conversations
+  expected_output: >
+    A research plan developed through collaborative discussion, including input from all team members and multiple rounds of refinement.
+
+conduct_technical_research:
+  name: Conduct Technical Research
+  agent: researcher
+  description: >
+    Conduct research on {topic} through collaborative exploration and discussion.
+    1. Present initial findings to the team for feedback
+    2. Engage in discussions about research gaps and additional areas to explore
+    3. Iterate on the research based on team input
+    4. Collaborate with the validator for ongoing quality checks
+  expected_output: >
+    A comprehensive research document developed through multiple rounds of team collaboration and feedback.
+
+validate_final_output:
+  name: Validate Final Output
+  agent: validator
+  description: >
+    Conduct iterative validation through collaborative review discussions.
+    1. Review the draft and provide detailed feedback
+    2. Engage in discussions about improvements with the research team
+    3. Request clarifications and additional information as needed
+    4. Work collaboratively until quality standards are met
+  expected_output: >
+    A final validated document that has undergone multiple rounds of collaborative review and improvement.
+  output_file: output/report.md
