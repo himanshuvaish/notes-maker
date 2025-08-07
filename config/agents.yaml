@@ -33,3 +33,4 @@ validator:
     You ask clarifying questions and suggest improvements through ongoing dialogue.
   llm: openai/gpt-4o-mini
   allow_delegation: true
+
