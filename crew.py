@@ -1,4 +1,3 @@
-# Updated crew.py
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai_tools import SerperDevTool
@@ -6,23 +5,16 @@ from crewai_tools import SerperDevTool
 @CrewBase
 class ResearchCrew:
     """Research crew for comprehensive topic analysis and crash course generation."""
+    
+    def __init__(self, agents_config=None, tasks_config=None):
+        """Initialize the crew with configuration."""
+        self.agents_config = agents_config or {}
+        self.tasks_config = tasks_config or {}
+        super().__init__()
 
-    def __init__(self, agents_config, tasks_config):
-        self.agents_config = agents_config
-        self.tasks_config = tasks_config
-
-    # Add a manager agent
-    @agent
-    def research_manager(self) -> Agent:
-        """Creates the research manager agent for orchestrating multi-turn conversations."""
-        return Agent(
-            role="Research Manager",
-            goal="Orchestrate the research process and facilitate multi-turn conversations between team members",
-            backstory="You are an experienced research manager who excels at coordinating team discussions and ensuring comprehensive coverage of topics through iterative conversations.",
-            verbose=True,
-            allow_delegation=True,  # Key for hierarchical process
-            llm="openai/gpt-4o-mini"
-        )
+    # ---------------------
+    # Agents
+    # ---------------------
 
     @agent
     def research_coordinator(self) -> Agent:
@@ -49,36 +41,55 @@ class ResearchCrew:
             verbose=True
         )
 
-    # Tasks remain largely the same but with collaborative descriptions
+    # ✅ Manager agent — note: no @agent decorator
+    def research_manager(self) -> Agent:
+        """Creates the research manager agent (not part of agents list)."""
+        return Agent(
+            role="Research Manager",
+            goal="Oversee the entire research process and coordinate agents",
+            backstory="You are an experienced leader guiding the team through complex research topics with strategic oversight.",
+            verbose=True,
+            allow_delegation=True,
+            llm="openai/gpt-4o-mini"
+        )
+
+    # ---------------------
+    # Tasks
+    # ---------------------
+
     @task
     def coordinate_research_task(self) -> Task:
         """Task for coordinating the overall research process."""
         return Task(
-            config=self.tasks_config['coordinate_research']
+            config=self.tasks_config['Coordinate Research']
         )
 
     @task
     def conduct_research_task(self) -> Task:
         """Task for conducting technical research on the topic."""
         return Task(
-            config=self.tasks_config['conduct_technical_research']
+            config=self.tasks_config['Conduct Technical Research']
         )
 
     @task
     def validate_final_output_task(self) -> Task:
         """Task for validating and finalizing the research output."""
         return Task(
-            config=self.tasks_config['validate_final_output'],
+            config=self.tasks_config['Validate Final Output'],
             output_file='output/report.md'
         )
 
+    # ---------------------
+    # Crew Definition
+    # ---------------------
+
     @crew
     def crew(self) -> Crew:
-        """Creates and returns the research crew with hierarchical process."""
+        """Creates and returns the research crew with a manager."""
         return Crew(
-            agents=self.agents,
+            agents=self.agents,  # does NOT include manager
             tasks=self.tasks,
-            process=Process.hierarchical,  # Changed from sequential
-            manager_agent=self.research_manager(),  # Add manager
+            process=Process.hierarchical,  # manager requires hierarchical
+            manager_agent=self.research_manager(),  # ✅ added manager
             verbose=True
         )
